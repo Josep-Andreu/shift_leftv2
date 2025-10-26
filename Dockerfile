@@ -1,17 +1,17 @@
-FROM ubuntu:18.04
+# Debian 10 (Buster) té vulnerabilitats però encara funciona
+FROM debian:10
 
 LABEL maintainer="tu@exemple.com"
-LABEL org.opencontainers.image.description="Imatge vulnerable de prova per Trivy"
+LABEL org.opencontainers.image.description="Imatge vulnerable per proves de Trivy"
 
-# Instal·la paquets antics amb CVEs coneguts
+# Instal·la paquets amb vulnerabilitats conegudes
 RUN apt-get update && \
     apt-get install -y \
         curl \
         openssl \
         apache2 \
-        python2 && \
+        python && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Afegeix un missatge d'exemple
-CMD echo "⚠️ Aquesta és una imatge de prova amb vulnerabilitats per a Trivy" && apache2 -v && openssl version
+CMD echo "⚠️ Aquesta és una imatge vulnerable per provar Trivy" && apache2 -v && openssl version
