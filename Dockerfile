@@ -1,12 +1,17 @@
-FROM alpine:3.20
+FROM ubuntu:18.04
 
-# Metadades útils
-LABEL org.opencontainers.image.description="Imatge bàsica per provar GitHub Actions + Trivy"
-LABEL org.opencontainers.image.licenses="MIT"
+LABEL maintainer="tu@exemple.com"
+LABEL org.opencontainers.image.description="Imatge vulnerable de prova per Trivy"
 
-# Instal·la un paquet senzill per tenir alguna cosa a escanejar
-RUN apk add --no-cache curl
+# Instal·la paquets antics amb CVEs coneguts
+RUN apt-get update && \
+    apt-get install -y \
+        curl \
+        openssl \
+        apache2 \
+        python2 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Defineix un script d'entrada directament dins el Dockerfile
-CMD echo "Hola! Aquesta és una imatge de prova per a GitHub Actions + Trivy." && curl --version
-
+# Afegeix un missatge d'exemple
+CMD echo "⚠️ Aquesta és una imatge de prova amb vulnerabilitats per a Trivy" && apache2 -v && openssl version
