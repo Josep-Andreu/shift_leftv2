@@ -1,5 +1,6 @@
 name: Build and Push to Quay
-
+permissions:
+  content: write
 on:
   push:
     branches:
@@ -58,6 +59,7 @@ jobs:
               --only-fixed \
               --add-cpes-if-none
 
+
       - name: 🔑 Login to Quay.io
         run: |
           docker login quay.io -u "${{ secrets.QUAY_USER }}" -p "${{ secrets.QUAY_PASSWORD }}"
@@ -65,3 +67,21 @@ jobs:
       - name: 🚀 Push image to Quay.io
         run: |
           docker push $FULL_IMAGE
+
+      # 💾 Commit SBOM to repo (only on main)
+      - name: 💾 Commit and push SBOM to repo
+        if: github.ref == 'refs/heads/main'
+        run: |
+          mkdir -p sbom
+          mv sbom.syft.json sbom/sbom.syft.json
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add sbom/sbom.syft.json
+
+          # Només fer commit si hi ha canvis
+          git diff --cached --quiet && echo "No SBOM changes, skipping commit." && exit 0
+
+          git commit -m "🔄 Update SBOM for ${{ github.sha }}"
+          git push origin HEAD:${{ github.ref }}
