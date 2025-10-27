@@ -27,6 +27,23 @@ jobs:
           severity: HIGH,CRITICAL
           exit-code: 1
           ignore-unfixed: true
+      - name: 📤 Upload SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-syft-json
+          path: sbom.syft.json
+          if-no-files-found: error
+          retention-days: 14
+
+      # 🛡️ Evaluate SBOM with Grype (fail build on HIGH or CRITICAL vulns)
+      - name: 🛡️ Vulnerability scan (Grype on SBOM)
+        run: |
+          docker run --rm \
+            -v "$PWD":/work \
+            anchore/grype:latest /work/sbom.syft.json \
+              --fail-on high \
+              --only-fixed=false \
+              --add-cpes-if-none
 
       - name: 🔑 Login to Quay.io
         run: |
