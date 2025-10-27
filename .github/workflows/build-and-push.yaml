@@ -27,13 +27,6 @@ jobs:
           severity: HIGH,CRITICAL
           exit-code: 1
           ignore-unfixed: true
-      - name: 📤 Upload SBOM artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: sbom-syft-json
-          path: sbom.syft.json
-          if-no-files-found: error
-          retention-days: 14
 
       # 🧾 Generate SBOM with Syft (syft-json format)
       - name: 🧾 Generate SBOM (Syft)
@@ -43,6 +36,17 @@ jobs:
             -v "$PWD":/work \
             anchore/syft:latest "$FULL_IMAGE" -o syft-json > sbom.syft.json
           test -s sbom.syft.json && echo "SBOM created: sbom.syft.json"
+
+
+
+      - name: 📤 Upload SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-syft-json
+          path: sbom.syft.json
+          if-no-files-found: error
+          retention-days: 14
+
 
       # 🛡️ Evaluate SBOM with Grype (fail build on HIGH or CRITICAL vulns)
       - name: 🛡️ Vulnerability scan (Grype on SBOM)
