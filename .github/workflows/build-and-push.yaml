@@ -1,11 +1,10 @@
 name: Build and Push to Quay
-permissions:
-  content: write
 on:
   push:
     branches:
       - main
-
+permissions:
+  contents: write
 env:
   FULL_IMAGE: quay.io/rh_ee_jfont/shiftsegur:v1
 
