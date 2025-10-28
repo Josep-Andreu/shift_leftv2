@@ -1,7 +1,7 @@
 FROM alpine:3.20
 
 # Metadades útils
-LABEL org.opencontainers.image.description="Imatge bàsica segura per provar GitHub Actions + Trivy + Syft + Grype + Pujar Artifact al pipeline"
+LABEL org.opencontainers.image.description="Imatge bàsica segura per provar GitHub Actions + Trivy + Syft + Grype + Pujar Artifact al pipeline i a Git"
 LABEL org.opencontainers.image.licenses="MIT"
 
 # Instal·la un paquet senzill per tenir alguna cosa a escanejar
